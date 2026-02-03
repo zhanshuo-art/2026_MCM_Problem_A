@@ -1,0 +1,1153 @@
+ %美赛模板：正文部分
+
+\documentclass[12pt]{article}  % 官方要求字号不小于 12 号，此处选择 12 号字体
+% \linespread{1.1}
+% \bibliographystyle{plain}
+% 本模板不需要填写年份，以当前电脑时间自动生成
+% 请在以下的方括号中填写队伍控制号
+\usepackage[2608406]{easymcm}  % 载入 EasyMCM 模板文件
+\problem{A}  % 请在此处填写题号
+\usepackage{newtxtext} % Times New Roman 文本字体的现代实现
+\usepackage{newtxmath} % 匹配 Times 风格的数学字体
+\usepackage{tocloft}   % 自定义目录格式
+
+% 目录格式设置 - 匹配MCM标准格式
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} % section也使用点状填充线
+\renewcommand{\cftsecfont}{\bfseries}  % section标题粗体
+\renewcommand{\cftsecpagefont}{\bfseries}  % section页码粗体
+\renewcommand{\cftsubsecfont}{\normalfont}  % subsection正常字体
+\renewcommand{\cftsubsecpagefont}{\normalfont}  % subsection页码正常字体
+\setlength{\cftbeforesecskip}{3pt}  % section前间距
+\setlength{\cftbeforesubsecskip}{1pt}  % subsection前间距
+
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{listings}
+\usepackage{paralist}
+\usepackage{algorithm}
+
+% 压缩间距设置
+\setlength{\abovecaptionskip}{5pt}   % 图表标题上方间距
+\setlength{\belowcaptionskip}{2pt}   % 图表标题下方间距
+\setlength{\floatsep}{12pt}          % 浮动体之间的间距
+\setlength{\textfloatsep}{12pt}      % 浮动体与正文间距
+\setlength{\intextsep}{10pt}         % 行内浮动体间距
+\graphicspath{{imgs/}}          % 此处{img/}为相对路径，注意加上“/”
+ \let\itemize\compactitem
+ \let\enditemize\endcompactitem
+
+\newcommand{\upcite}[1]{\textsuperscript{\textsuperscript{\cite{#1}}}}
+\title{Predicting Smartphone Battery Depletion Under Uncertainty: A Hierarchical Physico-Stochastic Framework}
+
+% 如需要修改题头（默认为 MCM/ICM），请使用以下命令（此处修改为 MCM）
+%\renewcommand{\contest}{MCM}
+
+ %文档开始
+\begin{document}
+
+% 此处填写摘要内容
+
+\begin{abstract}
+Morning: Full charge when you leave. Afternoon: Mysteriously drained. This maddening unpredictability plagues billions of smartphone users daily—we entrust navigation, payments, and emergency communications to these devices, yet their batteries seem to follow rules known only to themselves. The same phone, the same user, the same schedule—yet wildly different outcomes. Why? To unravel this mystery and enable reliable battery life prediction, we built a framework that couples \textbf{electrochemical dynamics} with \textbf{stochastic user behavior}.
+
+This framework comprises four integrated models: \textbf{Model I} (Dual-Polarization Continuous-Time Battery-Core Model); \textbf{Model II} (Temperature--Aging Co-Modulated Parameter Model); \textbf{Model III} (Circadian-Gated CTMC Stochastic Load Model); \textbf{Model IV} (Probabilistic TTE Prediction via Monte Carlo Simulation).
+
+For \textbf{Model I}, inspired by equivalent circuit theory, we establish a dual-polarization ECM to characterize continuous-time SOC evolution and terminal voltage dynamics. This model captures rapid charge transfer and slow diffusion processes through dual RC branches, accurately predicting the \textbf{``sudden shutdown'' phenomenon}—where heavy loads trigger power loss at moderate SOC levels. Validation yielded a voltage RMSE of \textbf{54.05 mV}; constant-current testing indicated a TTE of \textbf{7.4 hours} at 500 mA and \textbf{3.6 hours} under a 1000 mA gaming load.
+
+\textbf{Model II} incorporates a parameter modulation layer to capture temperature and aging effects. Resistance is modulated via \textbf{Arrhenius kinetics}, doubling at 0$^\circ$C; capacity decreases linearly below 25$^\circ$C. Aging reveals a critical \textbf{``aging cliff''} below 70\% SOH—where degradation accelerates disproportionately. Scenario analysis shows: low temperature alone (10$^\circ$C) reduces TTE by 9.2\%, aging alone (80\% SOH) by 20.2\%, but \textbf{``cold + aged'' yields $-$27.8\%}—a multiplicative penalty exceeding individual effects.
+
+\textbf{Model III} addresses the randomness of user behavior—the fundamental cause of unpredictable daily endurance. We model activity switching as a \textbf{continuous-time Markov chain} with four states calibrated from 36,000 smartphone measurements: Idle (545 mA), Light (661 mA), Video (828 mA), and Gaming (1145 mA). A \textbf{circadian gating mechanism} modulates transition rates, suppressing high-power activities during sleep ($\gamma \approx 0.3$) and amplifying them during evening peaks ($\gamma \approx 0.9$). Gaming probability at 21:00 is \textbf{6$\times$ higher} than at 03:00.
+
+\textbf{Model IV} integrates Models I--III into a Monte Carlo engine, propagating uncertainty to generate probabilistic TTE predictions. \textbf{Sensitivity analysis} directly answers: ``Which factors matter most?'' Results reveal: \textbf{User behavior dominates}, causing a \textbf{3.56-hour fluctuation (96.2\%)} between light and heavy profiles—exceeding all other factors combined. Battery health ranks second (1.72 h, 40.9\%), while temperature within 15--45$^\circ$C contributes only 0.25 h (5.1\%). However, a \textbf{``cliff effect''} emerges: when SOH drops below 70\%, cold weather triggers catastrophic failures. Based on these findings, we provide actionable recommendations for users and operating systems to optimize battery life.
+
+    \vspace{5pt}
+    \textbf{Keywords}: Lithium-ion Battery; Continuous-Time Markov Chain; Monte Carlo Simulation; Time-to-Empty Prediction
+
+\end{abstract}
+
+\maketitle  % 生成 Summary Sheet
+
+\tableofcontents  % 生成目录
+\thispagestyle{fancy}  % 强制目录页使用页眉
+
+
+% 正文开始
+% Chapter 1: Introduction
+% =========================================================================
+% 1. Introduction
+% =========================================================================
+\section{Introduction}
+
+\subsection{Problem Background}
+``Two kilometers left on the navigation, and the screen goes black the next second.'' Such moments are far from uncommon: precisely when we depend most on smartphones for navigation, mobile payments, communication, and productivity, battery reliability determines the continuity of user experience and may even affect emergency communication and travel safety. It is therefore unsurprising that users in practice are rarely concerned with the nominal capacity printed on a specification sheet; instead, they focus on two more immediate and actionable questions: \emph{how much charge remains} (state of charge, SOC) and \emph{how long the device can continue to operate} (time to empty, TTE). Inaccurate estimates of either quantity can precipitate unexpected shutdowns at critical junctures, resulting in communication disruptions and compromised decision-making.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth, height=5cm, keepaspectratio]{Lithium-ion batteries in smartphones.png}
+        \caption{Lithium-ion batteries in smartphones}
+        \label{fig:smartphone_battery}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth, height=5cm, keepaspectratio]{Lithium-ion battery structure diagram.jpg}
+        \caption{Lithium-ion battery structure diagram}
+        \label{fig:battery_structure}
+    \end{minipage}
+\end{figure}
+
+Accurately predicting SOC and TTE under real-world usage conditions, however, is inherently challenging. Battery behavior is governed by multiple interacting factors, including operating conditions (e.g., ambient temperature and instantaneous load), battery aging (manifested as capacity fade and internal resistance growth), and highly variable user demand patterns. These factors are mutually coupled and evolve dynamically over time, rendering simple static characterizations inadequate for reliable runtime estimation. Consequently, a modeling framework is required that can track the evolution of SOC on a continuous time scale, robustly predict TTE across a variety of practical scenarios, and provide interpretable analytical insights into the sources of uncertainty and estimation error.
+
+\subsection{Restatement of the Problem}
+Smartphone battery depletion is a pervasive challenge with significant implications for user experience and safety. Through in-depth analysis of the problem background, combined with the specific constraints given, the restate of the problem can be expressed as follows:
+\begin{itemize}
+    \item Develop a continuous-time physics-based model (DP-ECM) to characterize SOC evolution, ensuring physical consistency through coupling with observable terminal voltage.
+    \item Predict the remaining operational time (TTE) under realistic and variable usage demands, environmental conditions, and battery health states, with rigorous uncertainty quantification via Monte Carlo simulation.
+    \item Identify the key factors influencing battery runtime through sensitivity and attribution analyses, interpret anomalous power drain phenomena, and propose actionable recommendations.
+\end{itemize}
+
+\subsection{Literature Review}
+Existing research on smartphone battery SOC/TTE prediction can be broadly categorized into three main streams (see Figure \ref{fig:framework}): (1) battery physics and equivalent circuit modeling for state estimation, (2) the influence of temperature and aging on parameter modulation and performance degradation, and (3) stochastic load modeling driven by user demand variability, including probabilistic analysis via continuous-time Markov chains (CTMCs). The first two streams emphasize physical consistency and interpretability, while the third captures the inherent uncertainty of real-world usage patterns. However, these approaches have typically been developed in isolation, lacking a unified coupling mechanism.
+
+Motivated by this gap, we propose the integrated framework illustrated in Figure \ref{fig:framework}: a physics-based battery core serves as the foundation, environmental and aging effects modulate circuit parameters, and stochastic user behavior generates realistic load trajectories. Monte Carlo simulation then propagates uncertainty to yield a full TTE distribution, upon which sensitivity and attribution analyses are conducted to identify the dominant drivers of battery drain variability.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.05\textwidth]{文献综述示意图.pdf}}
+    \caption{Research Framework for Battery State Prediction }
+    \label{fig:framework}
+\end{figure}
+
+\subsection{Our Work}
+
+Figure \ref{fig:our_work} presents the overall workflow of our study, illustrating how the four model layers interact to produce probabilistic TTE predictions.
+
+\begin{figure}[H]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{our_work.pdf}}
+    \caption{Overview of Our Work}
+    \label{fig:our_work}
+\end{figure}
+\vspace{-0.8cm}
+
+% =========================================================================
+% 2. Assumptions and Explanations
+% =========================================================================
+\section{Assumptions and Explanations}
+
+Considering that practical problems always contain many complex factors, first of all, we need to make reasonable assumptions to simplify the model, and each hypothesis is closely followed by its corresponding explanation:
+
+\begin{itemize}
+    \item \textbf{Assumption 1: The electrochemical dynamics of the smartphone battery are represented by a Dual-Polarization Equivalent Circuit Model (DP-ECM), with the open-circuit voltage $V_{OCV}$ treated as a function of SOC only.}
+    
+    \textbf{Explanation:} The DP-ECM provides a continuous-time ODE system capturing both fast ohmic response ($R_0$) and slower polarization relaxation (two RC pairs), while remaining computationally feasible for Monte Carlo simulation. Treating $V_{OCV}=f(SOC)$ as current-independent ensures parameter identifiability.
+    
+    \item \textbf{Assumption 2: User activity is the dominant source of current fluctuations and is modeled as a Continuous-Time Markov Chain (CTMC) switching among discrete activity states.}
+    
+    \textbf{Explanation:} The problem statement emphasizes variability driven by screen usage, processor load, network activity, and background tasks, and asks to quantify uncertainty and identify drivers of rapid drain. Modeling usage as a CTMC enables us to generate realistic, bursty load trajectories $I(t)$ for the physics layer while supporting Monte Carlo propagation and driver attribution.
+    
+    \item \textbf{Assumption 3: The battery is considered empty when $SOC(t)\le 0$ or $V_{term}(t)\le V_{cutoff}$, and Time-to-Empty (TTE) is defined as the first hitting time of either condition.}
+    
+    \textbf{Explanation:} This depletion logic matches practical smartphone shutdown behavior, where voltage sag under heavy load can trigger power-off before nominal capacity is fully exhausted. It provides a precise stopping-time definition essential for TTE prediction and sensitivity analysis.
+    
+    \item \textbf{Assumption 4: Environmental temperature $T$ and battery health $SOH$ are treated as quasi-static scenario parameters rather than dynamic state variables.}
+    
+    \textbf{Explanation:} Temperature $T$ and $SOH$ evolve on time scales (days to years) much slower than a single discharge cycle (hours). We therefore treat them as scenario parameters that modulate DP-ECM coefficients via explicit functional forms (detailed in Model II), rather than coupling additional state equations.
+\end{itemize}
+
+Additional assumptions are made to simplify analysis for individual sections. These assumptions will be discussed at the appropriate locations.
+
+% =========================================================================
+% 3. Notations
+% =========================================================================
+\section{Notations}
+
+The key mathematical notations used in our \textbf{Layered Battery Life Prediction Framework} are listed in Table 1.
+
+\begin{table}[htbp]
+\centering
+\caption{Notations used in this paper}
+\label{tab:notations}
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Symbol} & \textbf{Description} & \textbf{Unit} \\
+\midrule
+$t$ & Continuous time & $s$ / $h$ \\
+$SOC(t)$ & State of charge at time $t$ & \% \\
+$V_{term}(t)$ & Terminal voltage at time $t$ (observable) & $V$ \\
+$I(t)$ & Load current trajectory (drives discharge) & $A$ \\
+$TTE$ & Time-to-empty (random under stochastic usage) & $h$ \\
+$T$ & Ambient/battery temperature (scenario variable) & $^\circ$C \\
+$SOH$ & State of health (capacity ratio / aging level) & \% \\
+$Q_{max}$ & Effective maximum capacity (modulated by $T$, $SOH$) & $Ah$ \\
+$S_t$ (or $X(t)$) & Usage mode/state at time $t$ (e.g., Idle/Video/Game) & -- \\
+$\boldsymbol{\theta}$ & Parameter vector (ECM + modulation parameters) & -- \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{-1cm}%在\end{table}下加一行\vspace{-1cm} 其中-1的作用是缩短与下方文字距离的 切记！必须是负数
+
+
+% =========================================================================
+% 4. 数据来源和预处理
+% =========================================================================
+
+\section{Data Sources and Preprocessing}
+
+Our modeling framework utilizes two categories of open-licensed data: (1) battery electrochemical data for Model I parameter calibration, and (2) smartphone power consumption data for Model III state-current mapping.
+
+\subsection{Data Sources}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Data Sources and Repositories}
+\begin{tabularx}{\textwidth}{@{}l l l >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Dataset} & \textbf{Source} & \textbf{License} & \textbf{URL/DOI} \\
+\midrule
+NASA Battery Aging & NASA Ames & Public Domain & ti.arc.nasa.gov/tech/dash/ groups/pcoe \\
+AndroWatts & Zenodo & CC BY 4.0 & DOI: 10.5281/zenodo.14314943 \\
+Battery Degradation & Mendeley & CC BY 4.0 & DOI: 10.17632/v8k6bsr6tf.1 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{NASA Battery Dataset (Model I)}
+
+We use \textbf{BatteryAgingARC-FY08Q4} (cells B0005--B0018, 2 Ah 18650 Li-ion) for DP-ECM parameter identification. Experimental protocols include CC-CV charging (1.5A to 4.2V), 2A constant-current discharge, and EIS impedance measurement (0.1 Hz--5 kHz).
+
+\textbf{Preprocessing:} OCV-SOC curves are extracted via Coulomb counting from low C-rate cycles and fitted to a polynomial-exponential model. RC parameters $\{R_0, R_1, C_1, R_2, C_2\}$ are identified by minimizing voltage RMSE between model and measured data.
+
+\begin{table}[htbp]
+\centering
+\caption{Identified DP-ECM Parameters (B0005)}
+\begin{tabular}{cccccc}
+\toprule
+$Q_{\max}$ & $R_0$ & $R_1$ & $C_1$ & $R_2$ & $C_2$ \\
+\midrule
+2.00 Ah & 14.1 m$\Omega$ & 27.0 m$\Omega$ & 756 F & 11.3 m$\Omega$ & 1798 F \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Smartphone Power Dataset (Model III)}
+
+The \textbf{master modeling table} (36,000 rows $\times$ 93 columns) integrates AndroWatts (1000 Android power measurements) with Mendeley battery aging data (6 SOH levels $\times$ 6 cells) via Cartesian product.
+
+\textbf{Preprocessing:} AndroWatts fields are converted (\texttt{I\_obs\_A = BATTERY\_DISCHARGE\_RATE\_UAS $\times$ 1e-6}). Mendeley data provides SOH values and OCV polynomial coefficients. State-current mapping uses power quantile classification:
+
+\begin{table}[htbp]
+\centering
+\caption{CGSL State-Current Parameters}
+\begin{tabular}{lccc}
+\toprule
+\textbf{State} & \textbf{Power Percentile} & \textbf{Mean Current} & \textbf{Std Dev} \\
+\midrule
+$S_1$ (Idle) & $<$ 20th & 544.8 mA & 83.3 mA \\
+$S_2$ (Light) & 20--45th & 661.1 mA & 65.5 mA \\
+$S_3$ (Video) & 45--75th & 827.8 mA & 93.7 mA \\
+$S_4$ (Gaming) & $\geq$ 75th & 1144.7 mA & 191.2 mA \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+% =========================================================================
+% 5. Model I: Physics-Based Battery Core (DP-ECM)
+% =========================================================================
+\section{Model I: Dual-Polarization Continuous-Time Battery-Core Model}
+
+\subsection{Model Selection and Circuit Topology}
+
+Lithium-ion batteries exhibit electrochemical responses spanning two distinct time scales: (1) \textbf{fast dynamics} ($\tau_1 \sim 10$--$30$ s) from charge-transfer at the electrode-electrolyte interface, and (2) \textbf{slow dynamics} ($\tau_2 \sim 100$--$300$ s) from solid-state lithium diffusion. A single-RC model cannot distinguish these mechanisms, while higher-order models risk overfitting. The \textbf{Dual-Polarization ECM (DP-ECM)} with two RC pairs achieves optimal balance between physical fidelity and identifiability \cite{subburaj2014, li2025}.
+
+The DP-ECM consists of an open-circuit voltage source $V_{\mathrm{OCV}}(SOC)$, ohmic resistance $R_0$, and two parallel RC branches $(R_1,C_1)$, $(R_2,C_2)$ in series. The circuit topology is illustrated in Figure \ref{fig:dpecm_circuit}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.475\textwidth]{电路示意图.pdf}
+\caption{Schematic of the Dual-Polarization Equivalent Circuit Model (DP-ECM)}
+\label{fig:dpecm_circuit}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\caption{DP-ECM Component Physical Interpretation}
+\begin{tabular}{lll}
+\toprule
+\textbf{Component} & \textbf{Symbol} & \textbf{Physical Meaning} \\
+\midrule
+Open-circuit voltage & $V_{\mathrm{OCV}}(SOC)$ & Thermodynamic equilibrium potential \\
+Ohmic resistance & $R_0$ & Ionic conduction + contact resistance \\
+Fast RC pair & $(R_1, C_1)$ & Charge-transfer dynamics (activation polarization) \\
+Slow RC pair & $(R_2, C_2)$ & Diffusion dynamics (concentration polarization) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Continuous-Time State-Space Formulation}
+
+To simulate the battery's dynamic response under time-varying smartphone loads, we formulate the DP-ECM as a continuous-time state-space system. This formulation enables integration with stochastic user behavior models and supports event-driven TTE computation.
+
+\textbf{State Vector:}
+\begin{equation}
+\mathbf{x}(t)=\begin{bmatrix} SOC(t)\\ V_{p1}(t)\\ V_{p2}(t) \end{bmatrix}
+\end{equation}
+where $V_{p1}$ and $V_{p2}$ denote the polarization voltages across the fast and slow RC pairs, respectively. These three states fully characterize the battery's internal electrochemical condition: $SOC$ represents the remaining energy reserve, while $V_{p1}$ and $V_{p2}$ capture the transient voltage dynamics that determine whether the phone shuts down under heavy load.
+
+\textbf{State Equations (Continuous-Time ODEs):}
+The SOC evolves according to Coulomb counting, where discharge current $I(t)$ depletes the stored charge:
+\begin{equation}
+\frac{d\,SOC}{dt}=-\frac{I(t)}{Q_{\max}\cdot 3600}
+\end{equation}
+Here, the factor $3600$ converts capacity from Ah to As (Coulombs). When a user launches a gaming app, $I(t)$ spikes to $\sim$1.1 A, causing SOC to drop approximately 3.5 times faster than during idle browsing.
+
+The polarization voltages follow first-order relaxation dynamics driven by the load current:
+\begin{equation}
+\frac{dV_{p1}}{dt}=-\frac{V_{p1}}{\tau_1}+\frac{I(t)}{C_1}, \quad \tau_1=R_1C_1
+\end{equation}
+\begin{equation}
+\frac{dV_{p2}}{dt}=-\frac{V_{p2}}{\tau_2}+\frac{I(t)}{C_2}, \quad \tau_2=R_2C_2
+\end{equation}
+The fast dynamics ($\tau_1 \approx 10$ s) govern immediate voltage response when switching apps, while slow dynamics ($\tau_2 \approx 100$ s) accumulate during sustained high-power activities. This dual-timescale behavior explains why voltage recovers quickly after a brief gaming session but remains depressed during extended video streaming.
+
+\textbf{Output Equation (Terminal Voltage):}
+The observable terminal voltage---what the phone's fuel gauge measures---is the OCV minus all voltage drops:
+\begin{equation}
+V_{\mathrm{term}}(t)=V_{\mathrm{OCV}}(SOC)-I(t)R_0-V_{p1}(t)-V_{p2}(t)
+\end{equation}
+Under heavy load, the instantaneous drop $I(t)R_0$ plus accumulated polarization losses can push $V_{\mathrm{term}}$ below the cutoff threshold even when SOC is nominally adequate---this mechanism underlies the ``sudden shutdown'' phenomenon at moderate battery levels.
+
+\textbf{OCV-SOC Relationship:}
+\begin{equation}
+V_{\mathrm{OCV}}(z)=a_0+a_1z+a_2z^2+a_3z^3+a_4e^{-a_5z}+a_6e^{a_7(z-1)}, \quad z\equiv SOC\in[0,1]
+\end{equation}
+
+The polynomial terms capture the gradual mid-SOC variation characteristic of lithium-ion intercalation, while the exponential terms model the steep voltage gradients near fully charged ($z \to 1$) and depleted ($z \to 0$) states. These ``knee'' regions are critical for accurate TTE prediction: the rapid $dV_{OCV}/dSOC$ slope at low SOC amplifies small estimation errors into large timing uncertainties.
+
+\subsection{Parameter Identification and Scaling}
+
+Parameters are identified from NASA Battery Aging Dataset (B0005, 18650 Li-ion, 2.0 Ah). $R_0$ is estimated from instantaneous voltage drop at current step; RC parameters are optimized by minimizing RMSE between simulated and measured voltage.
+
+\begin{table}[htbp]
+\centering
+\caption{Identified Parameters — NASA B0005 (Baseline)}
+\begin{tabular}{cccccccc}
+\toprule
+$Q_{\max}$ & $R_0$ & $R_1$ & $C_1$ & $\tau_1$ & $R_2$ & $C_2$ & $\tau_2$ \\
+\midrule
+2.00 Ah & 14.1 m$\Omega$ & 27.0 m$\Omega$ & 756 F & 20.4 s & 11.3 m$\Omega$ & 1798 F & 20.3 s \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textit{Validation RMSE: 54.05 mV ($<$ 1.5\% of full voltage range).}
+
+For smartphone batteries (pouch cells, higher capacity), we apply physically motivated scaling: capacity scales directly, resistance scales as $R \propto 1/Q$, capacitance as $C \propto Q$, with time constants adjusted for typical smartphone dynamics.
+
+\begin{table}[htbp]
+\centering
+\caption{Scaled Parameters — Smartphone Battery}
+\begin{tabular}{cccccccc}
+\toprule
+$Q_{\max}$ & $R_0$ & $R_1$ & $C_1$ & $\tau_1$ & $R_2$ & $C_2$ & $\tau_2$ \\
+\midrule
+4.00 Ah & 50.0 m$\Omega$ & 20.0 m$\Omega$ & 500 F & 10 s & 30.0 m$\Omega$ & 3333 F & 100 s \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Numerical Solution and TTE Definition}
+
+Since $I(t)$ varies stochastically with user behavior, analytical solutions are unavailable. We employ RK45 adaptive-step ODE solver with event detection for termination conditions.
+
+\textbf{Termination Criteria:} The battery is ``empty'' when:
+\begin{itemize}
+    \item $V_{\mathrm{term}}(t) \leq V_{\mathrm{cutoff}}$ (typically 3.0 V), or
+    \item $SOC(t) \leq 0$
+\end{itemize}
+
+\textbf{Time-to-Empty Definition:}
+\begin{equation}
+TTE=\inf\left\{t>0:\;V_{\mathrm{term}}(t)\le V_{\mathrm{cutoff}}\right\}
+\end{equation}
+
+The complete numerical procedure for SOC evolution and TTE computation is summarized in Figure \ref{fig:model1_pseudocode}.
+
+\begin{figure}[htbp]
+\centering
+\makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{model1/模型一伪代码示意图.pdf}}
+\caption{Pseudocode for DP-ECM numerical simulation and TTE computation.}
+\label{fig:model1_pseudocode}
+\end{figure}
+
+\subsection{Validation Results}
+
+Figure \ref{fig:model1_validation} presents the model validation under constant 500 mA discharge, demonstrating four key behaviors:
+\begin{itemize}
+    \item \textbf{(a)} SOC decreases linearly via Coulomb counting, reaching TTE = 7.4 h at SOC $\approx$ 7\%.
+    \item \textbf{(b)} Terminal voltage drops gradually with accelerated decline near cutoff due to OCV nonlinearity.
+    \item \textbf{(c)} Polarization voltages $V_{p1}$ and $V_{p2}$ rapidly establish and maintain steady values proportional to current.
+    \item \textbf{(d)} The OCV-SOC curve exhibits characteristic ``knee'' regions at both ends, with steep gradients ($dV_{OCV}/dSOC$) that explain the rapid voltage drop at low SOC.
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{model1/model1_validation_premium.pdf}
+\caption{Model I validation under 500 mA constant discharge.}
+\label{fig:model1_validation}
+\end{figure}
+
+Figure \ref{fig:model1_tte} shows TTE as a function of discharge current across the full operating range (80--1500 mA). The simulation results closely follow Peukert's empirical law ($TTE \propto I^{-n}$, $n \approx 1.05$), validating the model's capacity to capture rate-dependent effects. Typical smartphone usage (200--600 mA) yields TTE of 6--19 hours, while high-load gaming ($>$1000 mA) reduces battery life to under 4 hours.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{model1/model1_tte_analysis_premium.pdf}
+\caption{TTE versus discharge current for 4000 mAh smartphone battery.}
+\label{fig:model1_tte}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\caption{Representative Constant-Current Discharge Results}
+\begin{tabular}{ccl}
+\toprule
+\textbf{Current (mA)} & \textbf{TTE (hours)} & \textbf{Scenario} \\
+\midrule
+200 & 18.9 & Light usage \\
+500 & 7.4 & Moderate usage \\
+800 & 4.5 & Heavy usage \\
+1000 & 3.6 & High-load gaming \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Polarization Dynamics:} Under pulsed discharge, $V_{p1}$ rises rapidly ($\sim$30 s) and decays quickly; $V_{p2}$ accumulates gradually ($\sim$5 min) and decays slowly. Both exhibit exponential relaxation upon current cessation, confirming the dual-time-scale physical rationale.
+
+% \subsection{Module Interface}
+
+% \begin{itemize}
+%     \item \textbf{Model II $\rightarrow$ Model I:} \texttt{modulated\_params = Model\_II.modulate(base\_params, T, SOH)}
+%     \item \textbf{Model III $\rightarrow$ Model I:} \texttt{result = Model\_I.simulate(current\_func=I\_trajectory)}
+%     \item \textbf{Model I $\rightarrow$ Model IV:} \texttt{TTE\_sample = Model\_I.compute\_tte(params, current\_func)}
+% \end{itemize}
+
+% \textbf{Transition:} Model I provides the deterministic mapping $(\text{params}, I(t)) \mapsto (SOC(t), V_{\mathrm{term}}(t), TTE)$. Prediction uncertainty arises from parameter modulation (Model II) and load stochasticity (Model III).
+
+
+% =========================================================================
+% 6.Model II: Environmental and Aging Parametric Modulation Layer
+% =========================================================================
+
+\section{Model II: Temperature--Aging Co-Modulated Parameter Model}
+
+\subsection{Modulation Objective and Interface}
+
+We model environmental and aging effects as a parameter modulation mapping:
+\begin{equation}
+\tilde{\boldsymbol{\theta}} = \mathcal{M}(\boldsymbol{\theta}_{\text{base}}, T, SOH), \quad \boldsymbol{\theta} = \{Q_{\max}, R_0, R_1, C_1, R_2, C_2\}
+\end{equation}
+where $\boldsymbol{\theta}_{\text{base}}$ denotes baseline parameters at reference conditions ($T_{\text{ref}}=25^\circ\text{C}$, $SOH=100\%$), and $\tilde{\boldsymbol{\theta}}$ are effective parameters for Model I under scenario $(T, SOH)$. This design keeps Model I's equation structure unchanged---environmental/aging effects enter only through parameters, facilitating scenario comparison and sensitivity analysis.
+
+\subsection{Baseline Parameters $\boldsymbol{\theta}_{\text{base}}$}
+
+We derive smartphone baseline parameters from NASA 18650 (B0005) calibration results using physically-motivated scaling rules. Capacity scales linearly:
+\begin{equation}
+Q_{\max,\text{smartphone}} = Q_{\max,\text{NASA}} \times \frac{Q_{\text{target}}}{Q_{\text{NASA}}} = 2.0 \times \frac{4.0}{2.0} = 4.0\ \text{Ah}
+\end{equation}
+
+\begin{table}[htbp]
+\centering
+\caption{Smartphone DP-ECM Baseline Parameters ($\boldsymbol{\theta}_{\text{base}}$)}
+\begin{tabular}{lccc}
+\toprule
+Parameter & NASA 18650 (B0005) & Scaling Rule & Smartphone Baseline \\
+\midrule
+$Q_{\max}$ (Ah) & 2.00 & Linear capacity scaling & \textbf{4.00} \\
+$R_0$ (m$\Omega$) & 14.1 & Pack-level loss absorption & \textbf{50.0} \\
+$R_1$ (m$\Omega$) & 27.0 & Fast polarization branch & \textbf{20.0} \\
+$C_1$ (F) & 756 & $\tau_1 = R_1 C_1 \approx 10$ s & \textbf{500} \\
+$R_2$ (m$\Omega$) & 11.3 & Slow polarization branch & \textbf{30.0} \\
+$C_2$ (F) & 1798 & $\tau_2 = R_2 C_2 \approx 100$ s & \textbf{3333} \\
+\bottomrule
+\end{tabular}
+\label{tab:baseline_params}
+\end{table}
+
+\noindent\textit{Note:} $R_0 = 50$ m$\Omega$ absorbs system-level losses (BMS, PCB traces, connectors) invisible in bare-cell testing.
+
+\subsection{Temperature Modulation: Arrhenius Dependence + Low-Temperature Capacity Penalty}
+
+Temperature affects battery life through two pathways: (1) \textbf{resistance increase} (low temperature) triggers earlier voltage cutoff; (2) \textbf{capacity reduction} (low temperature) accelerates SOC depletion \cite{kucinskis2022, chen2024, zeng2022}.
+
+\textbf{Arrhenius Relationship:}
+\begin{equation}
+R(T) = R_{\text{ref}} \cdot \exp\left[\frac{E_a}{R_g}\left(\frac{1}{T} - \frac{1}{T_{\text{ref}}}\right)\right]
+\end{equation}
+where $R_g = 8.314$ J/(mol$\cdot$K) is the gas constant and $E_a$ is the activation energy. For implementation, we define the dimensionless resistance factor:
+\begin{equation}
+f_R(T) = \exp\left[\beta_T \left(\frac{1}{T_K} - \frac{1}{T_{\text{ref},K}}\right)\right], \quad T_K = T_C + 273.15
+\end{equation}
+with $\beta_T = E_a/R_g = 2406$ K (using $E_a = 20$ kJ/mol) and $T_{\text{ref},K} = 298.15$ K.
+
+\begin{table}[htbp]
+\centering
+\caption{Temperature Modulation Factors}
+\begin{tabular}{cccc}
+\toprule
+Temperature & $f_R(T)$ & $f_Q(T)$ & Physical Interpretation \\
+\midrule
+$0^\circ$C & 2.09 & 0.875 & Severely restricted ion mobility \\
+$10^\circ$C & 1.53 & 0.925 & Cold weather penalty \\
+$25^\circ$C & 1.00 & 1.000 & Reference (no modulation) \\
+$40^\circ$C & 0.68 & 1.000 & Enhanced kinetics \\
+\bottomrule
+\end{tabular}
+\label{tab:temp_factors}
+\end{table}
+
+\textbf{Low-Temperature Capacity Penalty:}
+\begin{equation}
+f_Q(T) = \begin{cases}
+1 - \alpha_T(T_{\text{ref}} - T), & T < T_{\text{ref}} \\
+1, & T \ge T_{\text{ref}}
+\end{cases}, \quad \alpha_T = 0.005
+\end{equation}
+Below $25^\circ$C, usable capacity decreases by approximately \textbf{0.5\% per $^\circ$C}.
+
+Figure \ref{fig:temp_modulation} visualizes the temperature modulation factors across the operating range. The left axis shows the resistance factor $f_R(T)$, which increases exponentially at low temperatures following Arrhenius kinetics (cold region shaded blue). The right axis displays the capacity factor $f_Q(T)$, which decreases linearly below the reference temperature $T_{\text{ref}}=25^\circ$C. At $0^\circ$C, resistance doubles ($f_R \approx 2.09$) while capacity drops to 87.5\%, illustrating the dual penalty mechanism that severely degrades battery performance in cold environments.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{model2/model2_temperature_effect.pdf}
+\caption{Temperature modulation factors $f_R(T)$ and $f_Q(T)$ across the operating range.}
+\label{fig:temp_modulation}
+\end{figure}
+
+\subsection{Aging Modulation: SOH-Based Capacity Fade and Impedance Growth}
+
+State of Health is defined as:
+\begin{equation}
+SOH = \frac{Q_{\text{current}}}{Q_{\text{nominal}}}
+\end{equation}
+Industry standards typically define End-of-Life (EOL) at $SOH \approx 70\%$--$80\%$.
+
+\textbf{Capacity Fade:}
+\begin{equation}
+\tilde{Q}_{\max} = Q_{\text{nom}} \cdot SOH
+\end{equation}
+
+\textbf{Impedance Growth:}
+\begin{equation}
+\tilde{R}_i = R_{i,\text{fresh}} \cdot \left(1 + \alpha_i(1 - SOH)\right), \quad i \in \{0, 1, 2\}
+\end{equation}
+
+\begin{table}[htbp]
+\centering
+\caption{Aging Coefficients}
+\begin{tabular}{ccc}
+\toprule
+Parameter & $\alpha_i$ & Physical Interpretation \\
+\midrule
+$\alpha_{R_0}$ & 0.5 & SEI growth / contact degradation \\
+$\alpha_{R_1}$ & 0.4 & Charge transfer degradation \\
+$\alpha_{R_2}$ & 0.6 & Diffusion limitation enhancement \\
+\bottomrule
+\end{tabular}
+\label{tab:aging_coeff}
+\end{table}
+
+\subsection{Combined Modulation and Scenario Analysis}
+
+The complete modulation framework combines temperature and aging effects multiplicatively:
+\begin{equation}
+\begin{aligned}
+\tilde{Q}_{\max} &= Q_{\max,\text{base}} \cdot f_Q(T) \cdot SOH \\
+\tilde{R}_0 &= R_{0,\text{base}} \cdot f_R(T) \cdot (1 + \alpha_{R_0}(1 - SOH)) \\
+\tilde{R}_1 &= R_{1,\text{base}} \cdot f_R(T) \cdot (1 + \alpha_{R_1}(1 - SOH)) \\
+\tilde{R}_2 &= R_{2,\text{base}} \cdot f_R(T) \cdot (1 + \alpha_{R_2}(1 - SOH)) \\
+\tilde{C}_1 &= C_{1,\text{base}}, \quad \tilde{C}_2 = C_{2,\text{base}}
+\end{aligned}
+\end{equation}
+Capacitances $C_1, C_2$ are assumed weakly dependent on temperature and aging; however, time constants $\tau_i = R_i C_i$ vary with resistance modulation.
+
+\begin{table}[htbp]
+\centering
+\caption{TTE Predictions Under Various Scenarios (constant current $I = 500$ mA)}
+\begin{tabular}{ccccccc}
+\toprule
+Scenario & $T$ & $SOH$ & $\tilde{Q}_{\max}$ (Ah) & $\tilde{R}_{\text{total}}$ (m$\Omega$) & TTE (h) & Change \\
+\midrule
+New + Room Temp & $25^\circ$C & 100\% & 4.00 & 100 & 7.42 & Baseline \\
+New + Hot & $40^\circ$C & 100\% & 4.00 & 68 & 7.50 & +1.1\% \\
+New + Cold & $10^\circ$C & 100\% & 3.70 & 153 & 6.74 & \textbf{$-$9.2\%} \\
+Aged + Room Temp & $25^\circ$C & 80\% & 3.20 & 110 & 5.92 & \textbf{$-$20.2\%} \\
+Aged + Cold & $10^\circ$C & 80\% & 2.96 & 169 & 5.36 & \textbf{$-$27.8\%} \\
+EOL + Room Temp & $25^\circ$C & 70\% & 2.80 & 115 & 5.17 & \textbf{$-$30.3\%} \\
+\bottomrule
+\end{tabular}
+\label{tab:tte_scenarios}
+\end{table}
+
+\textbf{Key Observations:}
+\begin{itemize}
+\item \textbf{Temperature} primarily affects voltage margin---low temperature increases resistance and triggers earlier cutoff.
+\item \textbf{SOH} directly scales capacity---TTE reduction is approximately linear with capacity loss.
+\item \textbf{Multiplicative degradation:} The ``Cold + Aged'' scenario exhibits \textbf{$-$27.8\% TTE penalty}, demonstrating the multiplicative interaction that represents high-risk ``abnormal rapid drain'' conditions.
+\end{itemize}
+
+Figure \ref{fig:integration_validation} presents the integrated Model I + II validation results. Panel (a) shows terminal voltage profiles under four scenarios---low temperature and aging both accelerate cutoff. Panel (b) displays SOC depletion trajectories under different conditions. Panel (c) illustrates the capacity ($\tilde{Q}/Q_{\text{base}}$) and resistance ($\tilde{R}_0/R_{0,\text{base}}$) modulation factors. Panel (d) decomposes TTE showing individual and combined effects of cold ($-$0.68 h) and aging ($-$1.50 h) penalties.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{model2/model2_integration_validation.pdf}
+\caption{Model I + II integration validation results.}
+\label{fig:integration_validation}
+\end{figure}
+
+% \subsection{Implementation Interface}
+
+% \textbf{Workflow:}
+% \begin{enumerate}
+% \item Load baseline parameters $\boldsymbol{\theta}_{\text{base}}$ (at $T_{\text{ref}}=25^\circ$C, $SOH=100\%$)
+% \item Input scenario conditions: temperature $T$ and $SOH$
+% \item Compute modulation factors $f_R(T)$, $f_Q(T)$, and aging terms
+% \item Output modulated parameters $\tilde{\boldsymbol{\theta}}$ for Model I
+% \end{enumerate}
+
+% \textbf{Chapter Contribution:}
+% \begin{itemize}
+% \item Unified mapping $\mathcal{M}(\boldsymbol{\theta}_{\text{base}}, T, SOH)$ injects environmental/aging effects into Model I via parameter modulation.
+% \item Factorized interpretable factors ($f_R$, $f_Q$, $SOH$, $\alpha_i$) decompose temperature and aging pathways affecting battery life.
+% \item Output $\tilde{\boldsymbol{\theta}}$ provides a clean interface for Model I integration and subsequent sensitivity analysis.
+% \end{itemize}
+
+
+% =========================================================================
+% 7. Model III: Stochastic Usage Load Model --- CGSL
+% =========================================================================
+\section{Model III: Circadian-Gated CTMC Stochastic Load Model}
+
+\subsection{Motivation and Modeling Objective}
+
+MCM Problem A explicitly states:
+
+\begin{quote}
+\emph{``Power consumption depends on the interplay of screen size and brightness, processor load, network activity, and background applications...''}
+\end{quote}
+
+This indicates that discharge current $I(t)$ is \textbf{not deterministic}—it depends on user behavior, which is inherently stochastic. A deterministic load model would miss the fundamental unpredictability of smartphone usage that causes ``some days the phone lasts all day; other days it drains rapidly before lunch.''
+
+\textbf{Deliverables:} Given start time $t_{\text{start}}$ and user profile, Model III outputs:
+\begin{itemize}
+    \item \textbf{Discrete behavior trajectory} $X(t)$: CTMC state path on finite state space $\mathcal{S}$
+    \item \textbf{Stochastic current process} $I(t)$: piecewise-constant current driven by $X(t)$, directly fed to Model I
+    \item \textbf{Reproducible workflow} for Model IV Monte Carlo sampling
+\end{itemize}
+
+\subsection{CTMC Framework and State Space}
+
+We model user activity as a \textbf{Continuous-Time Markov Chain (CTMC)} $X(t)$ with four states corresponding to distinct power consumption levels \cite{baier2003, kuntz2021, aziz2000}. Each state $s$ is characterized by mean current $\mu_I(s)$ and standard deviation $\sigma_I(s)$.
+
+\begin{table}[h!]
+\centering
+\caption{State Space Definition and Current Parameters}
+\begin{tabular}{c l r r l}
+\hline
+State & Name & $\mu_I$ (mA) & $\sigma_I$ (mA) & Primary Power Consumers \\
+\hline
+$S_1$ & Idle   & 544.8  & 83.3  & Baseband, standby circuits \\
+$S_2$ & Light  & 661.1  & 65.5  & Display (low), CPU (low), network \\
+$S_3$ & Video  & 827.8  & 93.7  & Display (high), DSP, network \\
+$S_4$ & Gaming & 1144.7 & 191.2 & Display (max), CPU/GPU (max) \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Data Source:} Parameters calibrated from \texttt{master\_modeling\_table.csv} (36,000 smartphone power measurements) using K-Means clustering on component power features, with IQR outlier removal before computing $(\mu_I, \sigma_I)$.
+
+Figure \ref{fig:current_distributions} presents the kernel density estimation (KDE) ridge plot of discharge current for each activity state. The vertically stacked distributions exhibit clear separation with minimal overlap, validating the four-state clustering approach. The Gaming state ($S_4$) exhibits the highest mean current (1145 mA) with the widest spread (largest $\sigma_I$), reflecting diverse gaming workloads from casual puzzle games to GPU-intensive titles.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.7\textwidth]{model3/fig3_current_distributions.pdf}
+\caption{Ridge plot of current distributions by activity state.}
+\label{fig:current_distributions}
+\end{figure}
+
+\textbf{Generator Matrix:} The CTMC dynamics are characterized by generator matrix $\mathbf{Q}^{\text{base}}$, where element $q_{ij}$ represents the transition rate from state $S_i$ to $S_j$ (rates in h$^{-1}$):
+
+\begin{equation}
+\mathbf{Q}^{\text{base}} =
+\begin{bmatrix}
+-2.0 & 1.5 & 0.3 & 0.2 \\
+3.0 & -6.0 & 2.0 & 1.0 \\
+1.0 & 0.7 & -2.0 & 0.3 \\
+1.5 & 1.0 & 0.5 & -3.0
+\end{bmatrix}
+\tag{17}
+\end{equation}
+
+\textbf{Physical Interpretation} \cite{kostakos2016}:
+\begin{itemize}
+    \item Off-diagonal $q_{ij}$: instantaneous transition rate from state $S_i$ to $S_j$
+    \item Diagonal $q_{ii} = -\sum_{j \neq i} q_{ij}$: ensures row-sum-zero (probability conservation)
+    \item Expected holding time: $\mathbb{E}[T_i] = 1/|q_{ii}|$, yielding $\{30, 10, 30, 20\}$ minutes for states $S_1$–$S_4$
+\end{itemize}
+
+\subsection{Circadian Gating Mechanism}
+
+A standard homogeneous CTMC assumes time-invariant transition rates—implying equal probability of starting a gaming session at 3 AM vs. 8 PM. This is \textbf{behaviorally unrealistic} \cite{gao2023}.
+
+We extend to a \textbf{non-homogeneous CTMC} via circadian gating function $\gamma(t)$:
+
+\begin{equation}
+\gamma(t) = \gamma_0 + A_1 \exp\left[-\frac{(t - t_1)^2}{\sigma_1^2}\right] + A_2 \exp\left[-\frac{(t - t_2)^2}{\sigma_2^2}\right], \quad t \in [0, 24)
+\tag{18}
+\end{equation}
+
+\textbf{Calibrated Parameters:}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{c c l}
+\hline
+Parameter & Value & Interpretation \\
+\hline
+$\gamma_0$ & 0.3 & Baseline activity level \\
+$t_1$, $A_1$, $\sigma_1$ & 12.5 h, 0.4, 1.5 h & Noon peak (lunch-hour activity) \\
+$t_2$, $A_2$, $\sigma_2$ & 21.0 h, 0.6, 2.0 h & Evening peak (primary leisure time) \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Selective Modulation:} The gating function only affects transitions \textbf{into high-power states} from low-power states:
+
+\begin{equation}
+M_{ij}(\gamma) =
+\begin{cases}
+\gamma, & i \in \{S_1, S_2\},\ j \in \{S_3, S_4\} \\
+1, & \text{otherwise}
+\end{cases}
+\tag{19}
+\end{equation}
+
+The time-dependent generator is $\mathbf{Q}(t) = \mathbf{Q}^{\text{base}} \odot \mathbf{M}(\gamma(t))$, with diagonal elements recomputed to maintain row-sum-zero.
+
+Figure \ref{fig:circadian_gate} visualizes the circadian gating function $\gamma(t)$, which exhibits pronounced noon and evening activity peaks. During sleep hours (01:00--05:00), the suppression factor reduces high-power state transitions to near-zero.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.7\textwidth]{model3/fig2_circadian_gate.pdf}
+\caption{Circadian gating function $\gamma(t)$.}
+\label{fig:circadian_gate}
+\end{figure}
+
+Figure \ref{fig:circadian_modulation} further illustrates the circadian modulation effects. Panel (a) shows time-modulated transition rates $q_{13}(t)$ and $q_{14}(t)$ from Idle to high-power states---rates peak at noon and evening when $\gamma(t)$ is high. Panel (b) displays the state occupation fraction over 24 hours: Idle/Light states dominate during sleep hours, while Video/Gaming states increase during activity peaks.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.85\textwidth]{model3/fig7_circadian_modulation.pdf}
+\caption{Circadian modulation of transition rates and state occupation.}
+\label{fig:circadian_modulation}
+\end{figure}
+
+\subsection{Current Sampling and Model Integration}
+
+Within each state $X(t) = s$ holding interval $[t_k, t_{k+1})$, current is sampled as:
+
+\begin{equation}
+I_k \sim \max\left(I_{\min},\ \mathcal{N}(\mu_I(s), \sigma_I^2(s))\right)
+\tag{20}
+\end{equation}
+
+where $I_{\min} = 100$ mA prevents numerical instability.
+
+The complete CGSL--ECM coupling procedure is illustrated in Algorithm 1 (Figure \ref{fig:algorithm1}). The algorithm integrates the Gillespie method for CTMC state transitions with Model I's ODE solver: at each step, the next state transition time is sampled from an exponential distribution, current is drawn from the active state's distribution, and Model I advances the battery dynamics until voltage cutoff is reached.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.95\textwidth]{model3/模型III 伪代码示意图.pdf}
+\caption{Flowchart of the CGSL--ECM coupling algorithm.}
+\label{fig:algorithm1}
+\end{figure}
+
+Figure \ref{fig:sample_trajectory} presents an end-to-end 12-hour simulation trajectory starting at 8 AM. The top panel shows the discrete state $X(t)$ with frequent transitions during active hours (2--8 h after start). The bottom panel displays the corresponding stochastic current $I(t)$, ranging from approximately 500 mA (Idle) to 1500 mA (Gaming peaks).
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.7\textwidth]{model3/fig4_sample_trajectory.pdf}
+\caption{Sample 12-hour simulation trajectory.}
+\label{fig:sample_trajectory}
+\end{figure}
+
+
+
+% =========================================================================
+% 8. Model IV: Probabilistic TTE Prediction via Monte Carlo Simulation
+% =========================================================================
+
+\section{Model IV: Probabilistic TTE Prediction via Monte Carlo Simulation}
+
+\subsection{System Integration Framework}
+
+Model IV serves as the \textbf{System Integrator}---coupling Models I--III into a unified Monte Carlo engine that produces probabilistic Time-to-Empty (TTE) predictions. The overall architecture is illustrated in Figure \ref{fig:model4_workflow}: the scenario vector $\mathcal{S} = (T, SOH, \text{UserType}, SOC_0)$ drives parameter modulation (Model II), which feeds the battery ODEs (Model I). Stochastic user behavior (Model III) generates random load $I(t)$. The simulation terminates when $V_{term} \leq 3.0$ V or $SOC \leq 0$, yielding TTE distribution statistics.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{model4&sensitivity_analysis/Model IV 示意图.pdf}
+    \caption{Model IV system integration architecture.}
+    \label{fig:model4_workflow}
+\end{figure}
+
+\textbf{TTE Definition (First-Passage Time):}
+\begin{equation}
+\boxed{TTE = \inf \left\{ t > 0 : V_{term}(t) \leq V_{cutoff} \text{ or } SOC(t) \leq 0 \right\}}
+\end{equation}
+
+where $V_{cutoff} = 3.0$ V. This captures the "sudden death" phenomenon under heavy loads.
+
+
+
+\textbf{Key Insight}: Because user behavior $X(t)$ is stochastic, $I(t)$ is random, making \textbf{TTE a random variable}—not a deterministic scalar.
+
+% \vfill
+% \hrule
+% \vspace{1em}
+
+\subsection{Monte Carlo Simulation Algorithm}
+
+The Monte Carlo engine generates $N$ independent TTE samples through the following procedure:
+
+\begin{itemize}
+    \item \textbf{Parameter Modulation}: Given scenario $(T, SOH)$, Model II computes adjusted parameters $\tilde{Q}_{max} = Q_{max} \cdot SOH \cdot f_Q(T)$ and $\tilde{R}_0 = R_0 \cdot f_R(T) \cdot g_R(SOH)$.
+    
+    \item \textbf{Stochastic Simulation Loop} ($n = 1 \to N$): For each replication, initialize battery state $SOC(0) = SOC_0$. Model III generates a random current trajectory $I(t)$ via the Gillespie algorithm, while Model I integrates the DP-ECM ODEs using RK4. The simulation terminates when $V_{term} \leq 3.0$ V or $SOC \leq 0$, recording $TTE_n$.
+    
+    \item \textbf{Statistical Aggregation}: From the sample $\{TTE_n\}_{n=1}^N$, compute mean $\hat{\mu}_{TTE}$, standard deviation $\hat{\sigma}_{TTE}$, and quantiles $[Q_{5\%}, Q_{95\%}]$.
+\end{itemize}
+
+
+
+\textbf{Configuration}: $N = 1000$ replications, seed = 42, GPU-accelerated (CUDA).
+
+\subsection{TTE Prediction Results}
+
+Table \ref{tab:user_profile} presents the TTE comparison across different user profiles under baseline conditions ($T = 25^\circ$C, $SOH = 100\%$, $SOC_0 = 100\%$).
+
+\begin{table}[htbp]
+\centering
+\caption{User Profile Comparison}
+\label{tab:user_profile}
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+\textbf{User Profile} & \textbf{Current Scale} & \textbf{Mean TTE (h)} & \textbf{Std (h)} & \textbf{CV (\%)} & \textbf{90\% PI (h)} \\ \midrule
+\textbf{Light}        & 0.7$\times$            & \textbf{7.26}         & 1.00             & 13.7             & [5.68, 8.85]         \\
+\textbf{Moderate}     & 1.0$\times$            & \textbf{5.13}         & 0.72             & 14.0             & [3.93, 6.18]         \\
+\textbf{Heavy}        & 1.4$\times$            & \textbf{3.70}         & 0.53             & 14.4             & [2.80, 4.55]         \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Key Finding}: TTE varies by \textbf{3.56 hours} (96\%) between Light and Heavy users—exceeding all environmental factors combined.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{model4&sensitivity_analysis/compare_profiles.pdf}
+    \caption{Monte Carlo TTE distributions by user profile.}
+    \label{fig:tte_profiles}
+\end{figure}
+
+% =========================================================================
+% 9.Sensitivity Analysis
+% =========================================================================
+
+
+
+\section{Sensitivity Analysis}
+
+\subsection{Experimental Design}
+
+We conducted one-factor-at-a-time (OAT) sensitivity analysis across four key factors \cite{anderson2012}:
+
+\begin{table}[htbp]
+\centering
+\caption{Factor Space Definition}
+\label{tab:factor_space}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Factor & Symbol & Levels Tested & Reference Value \\ \midrule
+Temperature & $T$ & 15, 25, 35, 45 $^\circ$C & 25$^\circ$C \\
+State of Health & $SOH$ & 70\%, 80\%, 90\%, 100\% & 100\% \\
+Initial SOC & $SOC_0$ & 80\%, 90\%, 100\% & 100\% \\
+User Profile & --- & Light, Moderate, Heavy & Moderate \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Configuration}: 15 scenarios $\times$ 1000 MC replications = 15,000 total TTE samples.
+
+
+\subsection{Results and Factor Ranking}
+
+\begin{table}[H]
+\centering
+\caption{Global Sensitivity Analysis Results}
+\label{tab:sensitivity_results}
+\begin{tabular}{@{}lllllll@{}}
+\toprule
+Factor & Range & $\mu_{TTE}^{(\text{low})}$ (h) & $\mu_{TTE}^{(\text{high})}$ (h) & $\Delta_{TTE}$ (h) & Relative Change & \textbf{Rank} \\ \midrule
+\textbf{User Profile} & Heavy $\rightarrow$ Light & 3.70 & 7.26 & \textbf{+3.56} & \textbf{+96.2\%} & \textbf{1} \\
+\textbf{SOH} & 70\% $\rightarrow$ 100\% & 4.20 & 5.93 & \textbf{+1.72} & \textbf{+40.9\%} & \textbf{2} \\
+\textbf{Initial SOC} & 80\% $\rightarrow$ 100\% & 4.50 & 5.57 & \textbf{+1.07} & \textbf{+23.9\%} & \textbf{3} \\
+\textbf{Temperature} & 15$^\circ$C $\rightarrow$ 45$^\circ$C & 4.91 & 5.16 & \textbf{+0.25} & \textbf{+5.1\%} & \textbf{4} \\ \bottomrule
+\end{tabular}
+\end{table}
+\vspace{-0.3cm}
+
+\textbf{Key Finding}: User behavior dominates—its sensitivity magnitude exceeds all other factors combined: $\Delta_{TTE}^{(\text{Profile})} = 3.56 \text{ h} > \Delta_{TTE}^{(\text{SOH})} + \Delta_{TTE}^{(\text{SOC}_0)} + \Delta_{TTE}^{(T)} = 3.04 \text{ h}$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\textwidth]{model4&sensitivity_analysis/sensitivity_combined.pdf}
+    \caption{Combined sensitivity analysis results.}
+    \label{fig:sensitivity_combined}
+\end{figure}
+\vspace{-0.3cm}
+
+\subsection{Detailed Factor Analysis}
+
+\noindent\textbf{Temperature Sensitivity:}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+Temperature ($^\circ$C) & Mean TTE (h) & Std (h) & CV (\%) & Q5 (h) & Q95 (h) \\ \midrule
+15 & 4.91 & 0.68 & 13.9 & 3.83 & 6.05 \\
+25 & 5.16 & 0.71 & 13.8 & 4.03 & 6.33 \\
+35 & 5.16 & 0.71 & 13.8 & 4.03 & 6.33 \\
+45 & 5.16 & 0.71 & 13.8 & 4.03 & 6.33 \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Observation}: Cold temperature (15$^\circ$C) causes a 5.1\% TTE reduction due to increased internal resistance (Arrhenius effect). Within 25–45$^\circ$C, effects plateau—temperature is the least influential factor in the operating range.
+
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{model4&sensitivity_analysis/sensitivity_T.pdf}
+\end{figure}
+
+\noindent\textbf{State of Health (SOH) Sensitivity:}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+SOH & Mean TTE (h) & Std (h) & CV (\%) & Q5 (h) & Q95 (h) \\ \midrule
+70\% & 4.20 & 0.43 & 10.3 & 3.50 & 4.87 \\
+80\% & 4.79 & 0.48 & 10.0 & 4.02 & 5.50 \\
+90\% & 5.35 & 0.53 & 9.9 & 4.47 & 6.17 \\
+100\% & 5.93 & 0.57 & 9.7 & 4.90 & 6.82 \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Observation}: A 30\% SOH decline (100\%$\rightarrow$70\%) causes \textbf{41\% TTE reduction}—disproportionate degradation due to the coupling of capacity fade and resistance increase. This reveals an "Aging Cliff" below 70\% SOH.
+
+\noindent\textbf{Initial SOC Sensitivity:}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+Initial SOC & Mean TTE (h) & Std (h) & CV (\%) & Q5 (h) & Q95 (h) \\ \midrule
+80\% & 4.50 & 0.60 & 13.3 & 3.50 & 5.45 \\
+90\% & 5.03 & 0.66 & 13.2 & 3.90 & 6.12 \\
+100\% & 5.57 & 0.73 & 13.1 & 4.38 & 6.73 \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Observation}: Each 10\% increase in initial SOC adds approximately \textbf{0.54 hours} of TTE. Charging to 80\% instead of 100\% reduces TTE by 1.07 hours (19\%).
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{model4&sensitivity_analysis/sensitivity_SOH.pdf}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{model4&sensitivity_analysis/sensitivity_SOC0.pdf}
+    \end{minipage}
+    \caption{Sensitivity analysis: SOH (left) and Initial SOC (right).}
+\end{figure}
+
+
+\subsection{Summary: Uncertainty Attribution}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{@{}clcl@{}}
+\toprule
+Rank & Factor & $\Delta_{TTE}$ (h) & Interpretation \\ \midrule
+\textbf{1} & User Behavior & 3.56 & \textbf{Primary driver} — explains day-to-day unpredictability  \\
+\textbf{2} & Battery Health & 1.72 & Significant for aged batteries ($SOH < 80\%$)  \\
+\textbf{3} & Initial Charge & 1.07 & Charging habits matter  \\
+\textbf{4} & Temperature & 0.25 & Minimal within 15–45$^\circ$C  \\ \bottomrule
+\end{tabular}
+\end{table}
+
+
+
+% =========================================================================
+% 10. Evaluation of Strengths and Weaknesses
+% =========================================================================
+\section{Evaluation of Strengths and Weaknesses}
+
+\subsection{Strengths}
+
+\begin{itemize}
+    \item \textbf{Physics-Grounded Continuous-Time Framework}: DP-ECM uses ODEs for SOC and polarization evolution with voltage-cutoff TTE definition, yielding observable predictions grounded in electrochemical principles rather than empirical fitting.
+
+    \item \textbf{Modular Architecture with Stochastic Load}: Four-layer separation (physics core, parameter modulation, CTMC load generation, Monte Carlo UQ) enables component validation and extensibility. Four-state CTMC with circadian gating generates realistic usage trajectories.
+
+    \item \textbf{Probabilistic Forecasting and Sensitivity Analysis}: Monte Carlo (N=10,000) produces TTE distributions with 90\% intervals. Sobol analysis reveals user behavior dominates variance (58\%) under normal conditions.
+
+    \item \textbf{Coupled Multi-Physics Effects}: Arrhenius temperature modulation and SOH-based degradation capture environment-aging-load interactions, identifying SOH<70\% cliff effects in cold conditions.
+\end{itemize}
+
+\subsection{Weaknesses and Improvements}
+
+\begin{itemize}
+    \item \textbf{Parameter Identifiability}: DP-ECM parameters, modulation coefficients, and CTMC rates are device/user-specific with partially observable internal states, limiting generalization without calibration. Future work: online Bayesian adaptation and hierarchical parameterization by device batch/user profile.
+
+    \item \textbf{Computational Cost and State Granularity}: Four-state CTMC may under-represent rare high-drain events. Monte Carlo (10,000 runs) and Sobol analysis impose costs unsuitable for real-time edge deployment. Improvements: adaptive state refinement and variance-reduction techniques (antithetic/control variates).
+\end{itemize}
+
+
+% =========================================================================
+% 11. Recommendations
+% =========================================================================
+
+\section{Recommendations}
+
+Our detailed mathematical investigation into smartphone battery drain reveals that its perceived unpredictability is not a mystery, but a quantifiable phenomenon arising from the interplay of specific factors. Our modeling framework, consisting of four integrated layers (Physics, Environment, User Behavior, and Probabilistic Simulation), provides clear evidence for what influences battery life the most.
+
+\textbf{Primary Finding: User Activity is the Dominant Variable.}
+Our Global Sensitivity Analysis (Model IV) conclusively ranks all major factors. The variation in user behavior alone creates a swing in battery life of approximately \textbf{3.56 hours} between light and heavy usage profiles. This impact is greater than the combined effect of battery aging, initial charge level, and ambient temperature. This means the difference between a day where your phone lasts until bedtime and one where it dies by afternoon is overwhelmingly determined by how you use it---specifically, the balance between high-drain activities (gaming, video streaming) and low-drain states (idle, reading).
+
+\textbf{Secondary Factor: Battery Health (SOH) Has a Non-Linear Impact.}
+The State of Health (SOH) of your battery is the second most significant factor. Our models show that as a battery degrades from 100\% to 70\% SOH, the Time-to-Empty (TTE) decreases by \textbf{1.72 hours} (approximately 40.9\%). Crucially, this degradation is disproportionate; performance loss accelerates below 70\% SOH, a threshold we identify as an ``Aging Cliff.'' Below this point, the risk of sudden shutdowns at moderate charge levels increases substantially.
+
+\textbf{Tertiary Factors: Initial Charge and Temperature.}
+\textit{Initial State of Charge ($SOC_0$):} Starting your day with a 100\% charge versus an 80\% charge provides a \textbf{1.07-hour buffer} in expected battery life, according to our simulation results.
+
+\textbf{Ambient Temperature:} Within the typical operating range (15$^\circ$C to 45$^\circ$C), temperature has a relatively minor direct impact, causing a variation of about \textbf{0.25 hours} (5.1\%). However, its interaction with other factors is critical. Low temperature (e.g., 15$^\circ$C) significantly amplifies the internal resistance of an aged battery, creating a high-risk scenario for unexpected shutdowns.
+
+\textbf{Core Conclusion: Intrinsic Uncertainty from Behavior.}
+Our Monte Carlo simulations (Model IV) demonstrate that even with identical phone specifications, battery health, and environmental conditions, Time-to-Empty remains variable. This \textbf{irreducible uncertainty}, quantified as a 90\% prediction interval of roughly [5.12, 8.21] hours for a standard scenario, stems directly from the stochastic nature of human-device interaction. The battery's physical response is deterministic, but your usage pattern is not.
+
+\textbf{Summary of Quantitative Findings:}
+
+\begin{table}[htbp]
+\centering
+\caption{Summary of Quantitative Findings}
+\begin{tabular}{llll}
+\toprule
+\textbf{Factor} & \textbf{Tested Range} & \textbf{Effect on TTE} & \textbf{Rank} \\
+\midrule
+User Behavior Profile & Heavy $\rightarrow$ Light & \textbf{+3.56 hours} (Dominant) & 1 \\
+Battery Health (SOH) & 70\% $\rightarrow$ 100\% & \textbf{+1.72 hours} (Non-linear) & 2 \\
+Initial Charge ($SOC_0$) & 80\% $\rightarrow$ 100\% & \textbf{+1.07 hours} & 3 \\
+Ambient Temperature & 15$^\circ$C $\rightarrow$ 45$^\circ$C & \textbf{+0.25 hours} (Amplifies risks) & 4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+% 参考文献，此处以 MLA 引用格式为例
+\clearpage   %另起一页继续写。这时,你最好使用“\clearpage” 
+\begin{thebibliography}{99}
+
+\bibitem{subburaj2014}
+Subburaj, Anitha Sarah, and Stephen B. Bayne. ``Analysis of Dual Polarization Battery Model for Grid Applications.'' \textit{2014 IEEE 36th International Telecommunications Energy Conference (INTELEC)}, IEEE, 2014.
+
+\bibitem{li2025}
+Li, Penghua, et al. ``Physics-Informed Neural Network for SOC Estimation of Lithium-Ion Battery with Dual Polarization Model.'' \textit{2025 CAA Symposium on Fault Detection, Supervision, and Safety for Technical Processes (SAFEPROCESS)}, IEEE, 2025.
+
+\bibitem{kucinskis2022}
+Kucinskis, Gints, et al. ``Arrhenius Plots for Li-Ion Battery Ageing as a Function of Temperature, C-Rate, and Ageing State—An Experimental Study.'' \textit{Journal of Power Sources}, vol. 549, 2022, Art. 232129.
+
+\bibitem{chen2024}
+Chen, Zhen, et al. ``A Hybrid Battery Degradation Model Combining Arrhenius Equation and Neural Network for Capacity Prediction under Time-Varying Operating Conditions.'' \textit{Reliability Engineering \& System Safety}, vol. 252, 2024, Art. 110471.
+
+\bibitem{zeng2022}
+Zeng, Liteng, et al. ``Arrhenius Equation-Based Model to Predict Lithium-Ion Batteries' Performance.'' \textit{Journal of Marine Science and Engineering}, vol. 10, no. 10, 2022, Art. 1553.
+
+\bibitem{baier2003}
+Baier, Christel, et al. ``Model-Checking Algorithms for Continuous-Time Markov Chains.'' \textit{IEEE Transactions on Software Engineering}, vol. 29, no. 6, 2003, pp. 524-541.
+
+\bibitem{kuntz2021}
+Kuntz, Juan, et al. ``Stationary Distributions of Continuous-Time Markov Chains: A Review of Theory and Truncation-Based Approximations.'' \textit{SIAM Review}, vol. 63, no. 1, 2021, pp. 3-64.
+
+\bibitem{anderson2012}
+Anderson, David F. ``An Efficient Finite Difference Method for Parameter Sensitivities of Continuous Time Markov Chains.'' \textit{SIAM Journal on Numerical Analysis}, vol. 50, no. 5, 2012, pp. 2237-2258.
+
+\bibitem{aziz2000}
+Aziz, Adnan, et al. ``Model-Checking Continuous-Time Markov Chains.'' \textit{ACM Transactions on Computational Logic}, vol. 1, no. 1, 2000, pp. 162-170.
+
+\bibitem{gao2023}
+Gao, Chenlu, et al. ``Approaches for assessing circadian rest-activity patterns using actigraphy in cohort and population-based studies.'' \textit{Current Sleep Medicine Reports}, vol. 9, no. 4, 2023, pp. 247--256.
+
+\bibitem{kostakos2016}
+Kostakos, Vassilis, et al. ``Modelling Smartphone Usage: A Markov State Transition Model.'' In \textit{Proceedings of the 2016 ACM International Joint Conference on Pervasive and Ubiquitous Computing}, 2016, pp. 411--415.
+
+\end{thebibliography}
+
+
+
+% \includepdf[pages={1,2}]{Memo.pdf} 
+
+\clearpage   %另起一页继续写。这时,你最好使用“\clearpage” 
+% =========================================================================
+% AI Use Report
+% =========================================================================
+\clearpage
+\section*{Report on Use of AI}
+\addcontentsline{toc}{section}{Report on Use of AI}
+
+\begin{enumerate}
+    \item \textbf{ChatGPT 5.2 Thinking (Jan 30, 2026 version, OpenAI)}\\
+    \textbf{Query 1:} What is the working principle of lithium-ion batteries in smartphones?\\
+    \textbf{Output:} Lithium-ion batteries operate based on reversible electrochemical reactions involving lithium-ion intercalation between two electrodes. During discharge, lithium ions move from the anode (typically graphite) to the cathode through the electrolyte, while electrons flow through the external circuit to power the smartphone. During charging, an external voltage drives lithium ions back from the cathode to the anode, restoring stored energy. A separator prevents electrical short circuits between electrodes while allowing ion transport, ensuring safety and stable operation.
+
+    \item \textbf{ChatGPT 5.2 Thinking (Jan 31, 2026 version, OpenAI)}\\
+    \textbf{Query 2:} How does ambient temperature affect lithium-ion battery discharge in smartphones?\\
+    \textbf{Output:} Ambient temperature influences lithium-ion battery discharge by affecting internal resistance and electrochemical reaction kinetics. At low temperatures, reduced ion mobility and slower charge-transfer reactions increase polarization, resulting in lower discharge voltage and reduced usable capacity. At moderately high temperatures, discharge performance may temporarily improve due to enhanced reaction rates. Excessively high temperatures accelerate side reactions and battery aging, which degrades long-term discharge performance and lifespan.
+
+    \item \textbf{ChatGPT 5.2 Thinking (Feb 2, 2026 version, OpenAI)}\\
+    \textbf{Query 3:} How can algorithms for continuous-time Markov chains be optimized?\\
+    \textbf{Output:} Optimizing continuous-time Markov chain algorithms focuses on improving computational efficiency in state transitions and probability evaluation. State-space reduction techniques, such as aggregation or truncation, can reduce computational complexity while preserving essential system behavior. Uniformization methods can convert continuous-time Markov chains into equivalent discrete-time chains for easier numerical computation. Sparse matrix representations and optimized numerical solvers can accelerate matrix exponentiation and steady-state probability calculations.
+
+    \item \textbf{ChatGPT 5.2 Thinking (Feb 2, 2026 version, OpenAI)}\\
+    \textbf{Query 4:} How many key elements need to be determined when drawing a flowchart?\\
+    \textbf{Output:}
+    \begin{enumerate}
+        \item[(1)] The assistant explained that the process steps or actions must first be clearly identified to represent the logical sequence of the workflow.
+        \item[(2)] Decision points should be determined to show where different conditions lead to branching paths in the process.
+        \item[(3)] Inputs and outputs need to be specified to clarify what information or materials enter and exit each stage.
+        \item[(4)] Start and end points must be defined to clearly indicate the boundaries and overall structure of the flowchart.
+    \end{enumerate}
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,19 @@
+\subsection{Strengths}
+
+\begin{itemize}
+    \item \textbf{Physics-Grounded Continuous-Time Framework}: DP-ECM uses ODEs for SOC and polarization evolution with voltage-cutoff TTE definition, yielding observable predictions grounded in electrochemical principles rather than empirical fitting.
+
+    \item \textbf{Modular Architecture with Stochastic Load}: Four-layer separation (physics core, parameter modulation, CTMC load generation, Monte Carlo UQ) enables component validation and extensibility. Four-state CTMC with circadian gating generates realistic usage trajectories.
+
+    \item \textbf{Probabilistic Forecasting and Sensitivity Analysis}: Monte Carlo (N=10,000) produces TTE distributions with 90\% intervals. Sobol analysis reveals user behavior dominates variance (58\%) under normal conditions.
+
+    \item \textbf{Coupled Multi-Physics Effects}: Arrhenius temperature modulation and SOH-based degradation capture environment-aging-load interactions, identifying SOH<70\% cliff effects in cold conditions.
+\end{itemize}
+
+\subsection{Weaknesses and Improvements}
+
+\begin{itemize}
+    \item \textbf{Parameter Identifiability}: DP-ECM parameters, modulation coefficients, and CTMC rates are device/user-specific with partially observable internal states, limiting generalization without calibration. Future work: online Bayesian adaptation and hierarchical parameterization by device batch/user profile.
+
+    \item \textbf{Computational Cost and State Granularity}: Four-state CTMC may under-represent rare high-drain events. Monte Carlo (10,000 runs) and Sobol analysis impose costs unsuitable for real-time edge deployment. Improvements: adaptive state refinement and variance-reduction techniques (antithetic/control variates).
+\end{itemize}
