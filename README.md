@@ -1,4 +1,8 @@
+<div align="center">
+
 # 2026_MCM_Problem_A
+
+</div>
 
 <div align="center" style="margin-bottom: 40px;">
   <img src="https://github.com/zhanshuo-art/2026_MCM_Problem_A/blob/main/background_2.png" alt="background_2"  width="60%"/>
