@@ -4,14 +4,12 @@ This project represents our team's solution to Problem A. We welcome your commen
 ## 图片展示
 
 <div align="center">
-  <img src="图片1路径.png" alt="图片1" width="48%" />
-  <img src="图片2路径.png" alt="图片2" width="48%" />
+  <img src="https://github.com/zhanshuo-art/2026_MCM_Problem_A/blob/main/background_1.png"  width="48%" />
+  <img src="https://github.com/zhanshuo-art/2026_MCM_Problem_A/blob/main/background_2.png"  width="48%" />
 </div>
 
 <div align="center">
-  <img src="图片3路径.png" alt="图片3" width="98%" />
+  <img src="https://github.com/zhanshuo-art/2026_MCM_Problem_A/blob/main/flow_chart.png"  width="98%" />
 </div>
 
-## 说明
 
-<!-- 在这里添加更多内容 -->
