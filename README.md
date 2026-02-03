@@ -4,8 +4,8 @@ This project represents our team's solution to Problem A. We welcome your commen
 ## 图片展示
 
 <div align="center">
-  <img src="https://github.com/zhanshuo-art/2026_MCM_Problem_A/blob/main/background_1.png"  alt="background_1" width="48%" height="300px" />
-  <img src="https://github.com/zhanshuo-art/2026_MCM_Problem_A/blob/main/background_2.png"  alt="background_1" width="48%" height="300px" />
+  <img src="https://github.com/zhanshuo-art/2026_MCM_Problem_A/blob/main/background_2.png"  alt="background_2" width="40%" height="310px" />
+  <img src="https://github.com/zhanshuo-art/2026_MCM_Problem_A/blob/main/background_1.png"  alt="background_1" width="40%" height="310px" />
 </div>
 
 <div align="center">
